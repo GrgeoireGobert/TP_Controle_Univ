@@ -20,7 +20,8 @@ public:
 	bool hasFallen();                                               // Vrai si le bipede est tombé
 
 	b2Vec2 getCOM() const {return m_positionCOM;}                   // Retourne la position du CdM
-	FSM* getStateMachine(){return m_stateMachine;}                  // Retourne la machine à états finis des poses clés
+	//FSM* getStateMachine(){return m_stateMachine;}                  // Retourne la machine à états finis des poses clés
+	FSM_Walk_then_Run* getStateMachine(){return m_stateMachine;}                  // Retourne la machine à états finis des poses clés
 	PDController ** getPDControllers (){return m_PDControllers;}    // Retourne le tableau des régulateurs PD
 
 	float sumTorque() const;                                        // Retourne la somme des carrés des moments articulaires appliqués (pour l'optimisation)
@@ -40,7 +41,8 @@ protected:
 	std::vector<float>      m_currentAnglesGlobal;              // Les orientations courantes des corps rigides (globaux)
 	float                   m_motorTarget[NB_ARTICULATIONS+1];  // Le tableau de moments articulaires à appliquer (+1 pour tronc)
 	PDController		*	m_PDControllers[NB_ARTICULATIONS+1];// Le tableau des regulateurs PD (un par articulation +1 pour tronc)
-	FSM                 *   m_stateMachine;                     // La machine à états finis des poses clés
+	//FSM                 *   m_stateMachine;                     // La machine à états finis des poses clés
+	FSM_Walk_then_Run   *   m_stateMachine;                     // La machine à états finis des poses clés
 
     void computeCenterOfMass();                         // Calcul de la position et de la vitesse du CdM du bipede dans le repere du monde
     void KeyPoseTracking ();                            // Calcul des moments nécessaires au suivi des poses clés

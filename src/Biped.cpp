@@ -168,7 +168,31 @@ Biped::Biped (b2World* world) : m_world (world), m_hasFallen(false) { // Constru
         gainKv=1.8*sqrt(gainKp);
         m_PDControllers[6] = new PDController(gainKp,gainKv);
 
+        // Marche optimisée
+        //5.38256 3.78756 3.89887 4.05951 4.76847 3.88863 4.64299
+        //2.84759 4.87427 4.50625 7.19777 3.80694 11.1624 4.9254
+        /*
+        m_PDControllers[0]->setGains(5.38256 , 3.78756);
+        m_PDControllers[1]->setGains(3.89887 , 4.05951);
+        m_PDControllers[2]->setGains(4.76847 , 3.88863);
+        m_PDControllers[3]->setGains(4.64299 , 2.84759);
+        m_PDControllers[4]->setGains(4.87427 , 4.50625);
+        m_PDControllers[5]->setGains(7.19777 , 3.80694);
+        m_PDControllers[6]->setGains(11.1624 , 4.9254);
+        */
 
+        //Course optimisee
+        //5.03957 1.84241 4.22739 2.83057 7.09977 3.3356 5.09874 6.36899
+        //5.26441 2.40162 6.77016 5.00504 15.961 7.27813
+        // /*
+        m_PDControllers[0]->setGains(5.03957 ,1.84241);
+        m_PDControllers[1]->setGains(4.22739 ,2.83057);
+        m_PDControllers[2]->setGains(7.09977 ,3.3356);
+        m_PDControllers[3]->setGains(5.09874 ,6.36899);
+        m_PDControllers[4]->setGains(5.26441 ,2.40162);
+        m_PDControllers[5]->setGains(6.77016 ,5.00504);
+        m_PDControllers[6]->setGains(15.961 ,7.27813);
+        // */
 
 	    /// ======================================== ///
 
@@ -176,7 +200,11 @@ Biped::Biped (b2World* world) : m_world (world), m_hasFallen(false) { // Constru
         // ====================
         /// ============ TODO PARTIE II ============= ///
         //m_stateMachine = new FSM_Stand();
-        m_stateMachine = new FSM_Walk();
+        //m_stateMachine = new FSM_Walk();
+
+        //m_PDControllers[6]->setGains(15 ,8);
+        //m_stateMachine = new FSM_Run();
+        m_stateMachine = new FSM_Walk_then_Run();
         /// ========================================= ///
 
 }
@@ -197,7 +225,68 @@ void Biped::update(double Dt, bool lc, bool rc) {
 
     if (!hasFallen()) { // Teste si le bipède est tombé
         // Mise à jour de l'état dans la machine si condition remplie
-        m_stateMachine->update(Dt,lc,rc,m_currentAnglesLocal,m_currentAnglesGlobal);
+        m_stateMachine->new_update(Dt,lc,rc,m_currentAnglesLocal,m_currentAnglesGlobal);
+        //m_stateMachine->update(Dt,lc,rc,m_currentAnglesLocal,m_currentAnglesGlobal);
+
+        /////////////////
+        ////////////////
+        // /*
+        if(m_stateMachine->m_all_time<3)
+        {
+            //Stand optimisee
+            //5.03957 1.84241 4.22739 2.83057 7.09977 3.3356 5.09874 6.36899
+            //5.26441 2.40162 6.77016 5.00504 15.961 7.27813
+            // /*
+            m_PDControllers[0]->setGains(5 ,2);
+            m_PDControllers[1]->setGains(5 ,2);
+            m_PDControllers[2]->setGains(5 ,2);
+            m_PDControllers[3]->setGains(5 ,2);
+            m_PDControllers[4]->setGains(5 ,2);
+            m_PDControllers[5]->setGains(5 ,2);
+            m_PDControllers[6]->setGains(5 ,2);
+            // */
+
+        }
+        else if(m_stateMachine->m_all_time<13)
+        {
+            // Marche optimisée
+            //5.38256 3.78756 3.89887 4.05951 4.76847 3.88863 4.64299
+            //2.84759 4.87427 4.50625 7.19777 3.80694 11.1624 4.9254
+
+            m_PDControllers[0]->setGains(5.03957 ,1.84241);
+            m_PDControllers[1]->setGains(4.22739 ,2.83057);
+            m_PDControllers[2]->setGains(7.09977 ,3.3356);
+            m_PDControllers[3]->setGains(5.09874 ,6.36899);
+            m_PDControllers[4]->setGains(5.26441 ,2.40162);
+            m_PDControllers[5]->setGains(6.77016 ,5.00504);
+            m_PDControllers[6]->setGains(15.961 ,7.27813);
+
+        }
+        else
+        {
+            if(m_stateMachine->m_FSM_Walker->m_currentState!=5)
+            {
+
+            }
+            else
+            {
+                //Course optimisee
+                //5.03957 1.84241 4.22739 2.83057 7.09977 3.3356 5.09874 6.36899
+                //5.26441 2.40162 6.77016 5.00504 15.961 7.27813
+                // /*
+                m_PDControllers[0]->setGains(5.03957 ,1.84241);
+                m_PDControllers[1]->setGains(4.22739 ,2.83057);
+                m_PDControllers[2]->setGains(7.09977 ,3.3356);
+                m_PDControllers[3]->setGains(5.09874 ,6.36899);
+                m_PDControllers[4]->setGains(5.26441 ,2.40162);
+                m_PDControllers[5]->setGains(6.77016 ,5.00504);
+                m_PDControllers[6]->setGains(15.961 ,7.27813);
+                // */
+            }
+        }
+        // */
+        ///////////////
+        ///////////////
 
         // Calcul des moments nécessaires au suivi des poses clés
         KeyPoseTracking();
@@ -296,28 +385,25 @@ void Biped::KeyPoseTracking () {
 
         /// ======================================== ///
 
-        for(int j=0;j<=NB_ARTICULATIONS;j++)
+        // Lire la cible pour l'articulation j dans targetAngles
+        float angleDesire=targetAngles.at(j);
+        // Affecter la cible au régulateur PD par setTarget
+        m_PDControllers[j]->setTarget(angleDesire);
+        // Mise à jour de m_currentAnglesLocal par b2RevoluteJoint::GetJointAngle() (attention au signe et attention pour j==NB_ARTICULATIONS pas d'angle local)
+        if(j<NB_ARTICULATIONS)
         {
-            // Lire la cible pour l'articulation j dans targetAngles
-            float angleDesire=targetAngles.at(j);
-            // Affecter la cible au régulateur PD par setTarget
-            m_PDControllers[j]->setTarget(angleDesire);
-            // Mise à jour de m_currentAnglesLocal par b2RevoluteJoint::GetJointAngle() (attention au signe et attention pour j==NB_ARTICULATIONS pas d'angle local)
-            if(j<NB_ARTICULATIONS)
-            {
-                m_currentAnglesLocal.at(j)=m_joints[j]->GetJointAngle();
-            }
-            // Mise à jour de m_currentAnglesGlobal par b2Body::GetTransform().q.GetAngle() avec l'équivalence d'indice d'articulation et de corps rigide (cf. énumérations)
-            m_currentAnglesGlobal.at(j)=m_bodies[j]->GetTransform().q.GetAngle();
-            // Calcul du moment à ajouter dans m_motorTarget grâce au régulateur PD et en fonction de si la cible est locale ou globale
-            if(targetLocal.at(j))
-            {
-                m_motorTarget[j]=m_PDControllers[j]->compute(m_currentAnglesLocal.at(j));
-            }
-            else
-            {
-                m_motorTarget[j]=m_PDControllers[j]->compute(m_currentAnglesGlobal.at(j));
-            }
+            m_currentAnglesLocal.at(j)=m_joints[j]->GetJointAngle();
+        }
+        // Mise à jour de m_currentAnglesGlobal par b2Body::GetTransform().q.GetAngle() avec l'équivalence d'indice d'articulation et de corps rigide (cf. énumérations)
+        m_currentAnglesGlobal.at(j)=m_bodies[j]->GetTransform().q.GetAngle();
+        // Calcul du moment à ajouter dans m_motorTarget grâce au régulateur PD et en fonction de si la cible est locale ou globale
+        if(targetLocal.at(j))
+        {
+            m_motorTarget[j]=m_PDControllers[j]->compute(m_currentAnglesLocal.at(j));
+        }
+        else
+        {
+            m_motorTarget[j]=m_PDControllers[j]->compute(m_currentAnglesGlobal.at(j));
         }
 
 

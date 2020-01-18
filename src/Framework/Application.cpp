@@ -223,20 +223,20 @@ void Application::getOptimizationData(float * data) {
     du premier état de la machine à états à la première valeur du tableau
     */
     /// ========================================== ///
-    data[0]=3.0;
-    data[1]=1.0;
-    data[2]=3.0;
-    data[3]=1.0;
-    data[4]=3.0;
-    data[5]=1.0;
-    data[6]=3.0;
-    data[7]=1.0;
-    data[8]=3.0;
-    data[9]=1.0;
-    data[10]=3.0;
-    data[11]=1.0;
-    data[12]=10.0;
-    data[13]=3.0;
+    data[0]=m_biped->getPDControllers()[0]->getKdGain();
+    data[1]=m_biped->getPDControllers()[0]->getKpGain();
+    data[2]=m_biped->getPDControllers()[1]->getKdGain();
+    data[3]=m_biped->getPDControllers()[1]->getKpGain();
+    data[4]=m_biped->getPDControllers()[2]->getKdGain();
+    data[5]=m_biped->getPDControllers()[2]->getKpGain();
+    data[6]=m_biped->getPDControllers()[3]->getKdGain();
+    data[7]=m_biped->getPDControllers()[3]->getKpGain();
+    data[8]=m_biped->getPDControllers()[4]->getKdGain();
+    data[9]=m_biped->getPDControllers()[4]->getKpGain();
+    data[10]=m_biped->getPDControllers()[5]->getKdGain();
+    data[11]=m_biped->getPDControllers()[5]->getKdGain();
+    data[12]=m_biped->getPDControllers()[6]->getKdGain();
+    data[13]=m_biped->getPDControllers()[6]->getKdGain();
 
 }
 

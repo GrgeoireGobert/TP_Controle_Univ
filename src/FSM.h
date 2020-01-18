@@ -53,4 +53,28 @@ public:
 	FSM_Walk();
 };
 
+class FSM_Run : public FSM { // La machine à états finis pour un mouvement de marche
+public:
+	FSM_Run();
+};
+
+
+class FSM_Walk_then_Run : public FSM { // La machine à états finis pour un mouvement de marche
+public:
+	FSM_Walk_then_Run();
+
+	FSM_Stand* m_FSM_Stander;
+	FSM_Walk* m_FSM_Walker;
+	FSM_Run*  m_FSM_Runner;
+
+	double m_all_time;
+
+    // Mise à jour de l'état si condition remplie
+	void new_update(double Dt, bool lc, bool rc, std::vector<float> currentAnglesLocal, std::vector<float> currentAnglesGlobal);
+	// Retourne les cibles et information local/global
+	std::vector<float> getCurrentTargetAngles() const;
+	std::vector<bool> getCurrentTargetLocal() const;// {return m_states[m_currentState].targetLocal;}
+};
+
+
 #endif

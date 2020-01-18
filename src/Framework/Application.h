@@ -43,8 +43,8 @@ struct Settings {
 		pause = false;
 		singleStep = false;
         /// ============ TODO PARTIE III ============= ///
-		optimization = true;
-		optiDuration = 7.0;
+		optimization = false;
+		optiDuration = 10.0;
         /// ========================================== ///
 		steps = false;
 	}
